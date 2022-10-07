@@ -34,6 +34,7 @@ describe('AppController (e2e)', () => {
     expect(res.body.shuffled).toBe(false);
     expect(res.body.type).toBe('FULL');
   });
+
   it('/deck/open (POST)', async () => {
     const deckCreatedResponse: request.Response = await request(
       app.getHttpServer(),
@@ -62,5 +63,34 @@ describe('AppController (e2e)', () => {
     expect(deckOpenedResponse.body.shuffled).toBe(false);
     expect(deckOpenedResponse.body.type).toBe('SHORT');
     expect(Array.isArray(deckOpenedResponse.body.cards)).toBe(true);
+    expect(deckOpenedResponse.body.cards.length).toBe(32);
+  });
+
+  it('/cards/draw (POST)', async () => {
+    const deckCreatedResponse: request.Response = await request(
+      app.getHttpServer(),
+    )
+      .post('/deck/create')
+      .send({
+        shuffled: false,
+        type: 'SHORT',
+      });
+
+    expect(deckCreatedResponse.status).toEqual(201);
+    expect(deckCreatedResponse.body.deckId).toBeDefined();
+    expect(deckCreatedResponse.body.shuffled).toBe(false);
+    expect(deckCreatedResponse.body.type).toBe('SHORT');
+
+    const deckOpenedResponse: request.Response = await request(
+      app.getHttpServer(),
+    )
+      .post('/cards/draw')
+      .send({
+        deckId: deckCreatedResponse.body.deckId,
+        count: 3,
+      });
+
+    expect(Array.isArray(deckOpenedResponse.body.cards)).toBe(true);
+    expect(deckOpenedResponse.body.cards.length).toBe(3);
   });
 });
