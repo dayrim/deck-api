@@ -1,5 +1,12 @@
-import { Body, Controller, NotFoundException, Post } from '@nestjs/common';
 import {
+  Body,
+  Controller,
+  HttpCode,
+  NotFoundException,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
   getSchemaPath,
@@ -7,10 +14,12 @@ import {
 import { plainToClass } from 'class-transformer';
 import { HttpExceptionDto } from 'src/common/dto/HttpExceptionDto';
 import { DatabaseService } from 'src/providers/database/database.service';
+import { CardDto } from './dto/CardDto';
 import { DrawCardRequestDto } from './dto/DrawCardRequsetDto';
 import { DrawCardResponseDto } from './dto/DrawCardResponseDto';
 
 @Controller('cards')
+@ApiExtraModels(CardDto)
 export class CardsController {
   constructor(private readonly dbContext: DatabaseService) {}
 

@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+  output        = "../node_modules/@internal/prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Deck {
+  id         String       @id @default(uuid())
+  shuffled   Boolean      @default(false)
+  remaining  Int          @default(0)
+  type       String
+  deckToCard DeckToCard[]
+}
+
+model Card {
+  id         String       @id @default(uuid())
+  code       String       @unique
+  suit       String
+  value      String
+  deckToCard DeckToCard[]
+}
+
+model DeckToCard {
+  deck           Deck   @relation(fields: [deckId], references: [id])
+  deckId         String
+  card           Card   @relation(fields: [cardId], references: [id])
+  cardId         String
+  positionInDeck Int
+
+  @@id([deckId, cardId])
+  @@unique([deckId, positionInDeck])
+}
