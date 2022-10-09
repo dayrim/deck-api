@@ -4,9 +4,9 @@
     "json",
     "ts"
   ],
-  "rootDir": "../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+  "rootDir": "../",
   "moduleNameMapper": {
     "src/(.*)": "<rootDir>/src/$1"
   },

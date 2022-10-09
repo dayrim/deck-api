@@ -10,11 +10,12 @@ describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    // process.env.NODE_ENV = 'test';
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [{ provide: DatabaseService, useClass: TestDatabaseService }],
-    }).compile();
+    })
+      .overrideProvider(DatabaseService)
+      .useValue(new TestDatabaseService())
+      .compile();
     app = moduleFixture.createNestApplication();
     const cardsSeeder = app.get(CardsSeederService);
     await cardsSeeder.seed();
@@ -50,6 +51,7 @@ describe('AppController (e2e)', () => {
     expect(deckCreatedResponse.body.shuffled).toBe(false);
     expect(deckCreatedResponse.body.type).toBe('SHORT');
 
+    console.log(deckCreatedResponse.body, 'Created response');
     const deckOpenedResponse: request.Response = await request(
       app.getHttpServer(),
     )
@@ -57,7 +59,7 @@ describe('AppController (e2e)', () => {
       .send({
         deckId: deckCreatedResponse.body.deckId,
       });
-
+    console.log(deckOpenedResponse.body, 'Opened response');
     expect(deckOpenedResponse.status).toEqual(201);
     expect(deckOpenedResponse.body.deckId).toBeDefined();
     expect(deckOpenedResponse.body.shuffled).toBe(false);

@@ -62,16 +62,19 @@ export class DeckController {
         type: request.type,
         remaining: cards.length,
         shuffled: request.shuffled,
-        deckToCard: {
-          createMany: {
-            data: cards.map((card, index) => ({
-              cardId: card.id,
-              positionInDeck: index + 1,
-            })),
-          },
-        },
       },
     });
+
+    for (const [i, card] of cards.entries()) {
+      await this.dbContext.deckToCard.create({
+        data: {
+          deckId: deck.id,
+          cardId: card.id,
+          positionInDeck: i + 1,
+        },
+      });
+    }
+
     return plainToClass(CreateDeckResponseDto, deck, {
       excludeExtraneousValues: true,
     });
