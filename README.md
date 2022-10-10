@@ -13,6 +13,7 @@ $ yarn install
 $ yarn run start:db
 # run backend application
 $ yarn run start
+# go to https://localhost:3000/docs to see docs and try requests
 ```
 
 ## Testing the app
