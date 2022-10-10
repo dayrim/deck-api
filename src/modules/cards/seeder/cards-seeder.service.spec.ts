@@ -18,12 +18,14 @@ describe('CardsSeederService', () => {
 
     cardsSeeder = module.get<CardsSeederService>(CardsSeederService);
     await dbCtx.$executeRaw`DELETE FROM "DeckToCard"`;
+    await dbCtx.$executeRaw`DELETE FROM "Deck"`;
     await dbCtx.$executeRaw`DELETE FROM "Card"`;
   });
 
   it('should seed database with cards', async () => {
     await cardsSeeder.seed();
     const cards = await dbCtx.card.findMany();
+
     expect(Array.isArray(cards)).toBe(true);
     expect(cards.length).toBe(52);
   });
